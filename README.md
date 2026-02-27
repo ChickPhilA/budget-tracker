@@ -1,6 +1,8 @@
 # Budget Tracker
 This budget tracker is a small project, using to calculate my own weekly finances every payday, and dividing my paycheck into my savings, checkings, loans, and other finances. Another reason for this project is to deepen my understanding of React, as I am actively learning BY doing.
 
+Credit to FlorinPop17 on Codepen for his money falling animation, which is used on the background of my web app. Check it out here: https://codepen.io/FlorinPop17/pen/OGaMLb
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
