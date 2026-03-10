@@ -1,6 +1,4 @@
 import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
 import './App.css'
 import { PaySplitHistoryBox } from './PaySplitHistoryBox.jsx';
 import MoneyRain from './MoneyRain.jsx'
@@ -21,12 +19,21 @@ const fakePaySplits = [
 
 
   const [pay, setPay] = useState(0)
+  const [categories, setCategories] = useState(['Savings', 'Coffee', 'Gas'])
   const [date, setDate] = useState('')
   const [newPayClicked, setNewPayActivity] = useState(false) // for the SplitButton when we want to initate a new pay split
   const [history, changeHistory] = useState(fakePaySplits) // this is the state for the history container. We will update this when we add a new pay split to the history
   const [wizardStep, changeWizardStep] = useState(0) // this is for the 3-step state wizard in our splitting process. 1 is total pay, 2 is categories, and 3 is the splitting among categories
 
-  
+
+// Regex for pay input field in Step 1; ensures a valid and clean currency input format for the user
+const handlePayChange = (e) => {
+  const val = e.target.value
+  const regex = /^\d*\.?\d{0,2}$/ // allows numbers with up to 2 decimal places
+  if(val === ' ' || regex.test(val)) {
+    setPay(val)
+  }
+}
 
   return (
     <>
@@ -45,20 +52,31 @@ const fakePaySplits = [
             {/* The close button */}
               <button
                 onClick={() => {setNewPayActivity(false); changeWizardStep(1);}}
-                className="absolute top-4 right-4 text-gray-400 hover:text-white">
+                className="absolute top-4 right-4 text-gray-400 hover:text-red-500 hover:cursor-pointer hover:transition-colors">
                   x
               </button>
 
               {/* Step 1: Input the total pay */}
               {wizardStep === 1 && (
                 <div className="text-center">
+                  <h1 className="text-3xl font-bold text-emerald-600 mb-6 underline "> New Pay Split of Date </h1>
                   <h2 className="text-2xl font-bold text-emerald-400 mb-4"> How much did you get paid? (after tax and deductions)</h2>
-                  <input
-                    type="number"
-                    className="bg-gray-700 border-b-2 border-emerald-500 text-white text-3xl w-full outline-none py-2 mb-6"
-                    placeholder="$0.00"
-                    onChange={(e) => setPay(e.target.value)}
-                  />
+
+                  <div className="relative mt-4">
+                    <div className="absolute inset-y-0 left-0 pl-3 pb-6 flex items-center pointer-events-none">
+                      <span className="text-white text-3xl">$</span>
+                    </div>
+                    <input
+                      type="text" // switched type from number to text for better Regex control with the decimal and prevent number input issues later on
+                      inputMode="decimal"
+                      value={pay} // makes our input a controlled component; can't enter more than 2 decimal places and only numbers, thanks to the regex in handlePayChange
+                      step="0.01"
+                      className="bg-gray-700 border-b-2 border-emerald-500 text-white text-3xl w-full outline-none p-2 pl-8 mb-6
+                      appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      placeholder="0.00"
+                      onChange={handlePayChange}
+                    />
+                  </div>
 
                   <button 
                     onClick={() => changeWizardStep(2)}
