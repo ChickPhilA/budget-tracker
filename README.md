@@ -1,5 +1,14 @@
-# Budget Tracker
-This budget tracker is a small project, using to calculate my own weekly finances every payday, and dividing my paycheck into my savings, checkings, loans, and other finances. Another reason for this project is to deepen my understanding of React, as I am actively learning BY doing.
+# Paycheck Allocation Tool
+
+## The Issue
+
+Many workers have a fixed '9-to-5' salary, while others, who work part-time jobs and other dynamic sources of income, have variable income partioning salaries: salaries that always vary based on hours and tips within a time-period payroll basis.
+
+Some of these workers pick up extra hours that can further help them pay rent or save more towards that graphics card they'd want to buy, while those with hour cuts are under a tight belt, having to carefully allocate how much will their next paycheck go towards their savings and necessities, contrast to their wants. When your paycheck fluctuates based on hours and tips, budgeting isn't a "set-and-forget" task; it's a high-stakes allocation problem. A single hour cut can turn a "want" into a "necessity" trade-off.
+
+As a variable-income partitioned barista who also struggles with financing cognitive load, this tool was created to solve the cognitive load of paycheck-to-paycheck partioning, allowing workers to financially allocate and stragetize, the moment their paycheck hits their wallet.
+
+## Asset Credits
 
 Credit to FlorinPop17 on Codepen for his money falling animation, which is used on the background of my web app. Check it out here: https://codepen.io/FlorinPop17/pen/OGaMLb
 
