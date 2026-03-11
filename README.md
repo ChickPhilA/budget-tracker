@@ -4,9 +4,9 @@
 
 Many workers have a fixed '9-to-5' salary, while others, who work part-time jobs and other dynamic sources of income, have variable income partioning salaries: salaries that always vary based on hours and tips within a time-period payroll basis.
 
-Some of these workers pick up extra hours that can further help them pay rent or save more towards that graphics card they'd want to buy, while those with hour cuts are under a tight belt, having to carefully allocate how much will their next paycheck go towards their savings and necessities, contrast to their wants. When your paycheck fluctuates based on hours and tips, budgeting isn't a "set-and-forget" task; it's a high-stakes allocation problem. A single hour cut can turn a "want" into a "necessity" trade-off.
+Some of these workers pick up extra hours that can further help them pay rent or save more towards that graphics card they'd want to buy. In contrat, those with hour cuts are under a tight belt, having to carefully allocate how much will their next paycheck go towards their savings and necessities. When your paycheck fluctuates based on hours and tips, budgeting isn't a "set-and-forget" task; it's a high-stakes allocation problem. A single hour cut can turn a "want" into a "necessity" trade-off.
 
-As a variable-income partitioned barista who also struggles with financing cognitive load, this tool was created to solve the cognitive load of paycheck-to-paycheck partioning, allowing workers to financially allocate and stragetize, the moment their paycheck hits their wallet.
+As a variable-income partitioned barista who also struggles with the mental weight of financing, this tool was created to solve the cognitive load of paycheck-to-paycheck partioning, allowing workers to financially allocate and stragetize, the moment their paycheck hits their wallet.
 
 ## Asset Credits
 
