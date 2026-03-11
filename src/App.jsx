@@ -5,10 +5,6 @@ import MoneyRain from './MoneyRain.jsx'
 import SplitButton from './NewSplitButton.jsx'
 
 
-
-
-
-
 export default function App() {
 
 const fakePaySplits = [ 
@@ -51,9 +47,9 @@ const handlePayChange = (e) => {
               
             {/* The close button */}
               <button
-                onClick={() => {setNewPayActivity(false); changeWizardStep(1);}}
-                className="absolute top-4 right-4 text-gray-400 hover:text-red-500 hover:cursor-pointer hover:transition-colors">
-                  x
+                onClick={() => {setNewPayActivity(false); changeWizardStep(1); setPay('');}}
+                className="absolute top-3 right-4 text-gray-400 hover:text-red-500 hover:cursor-pointer hover:transition-colors">
+                  X
               </button>
 
               {/* Step 1: Input the total pay */}
@@ -80,7 +76,7 @@ const handlePayChange = (e) => {
 
                   <button 
                     onClick={() => changeWizardStep(2)}
-                    className="w-full bg-emerald-600 py-3 rounded-2xl font-bold transition-all hover:bg-emerald-500"
+                    className="w-full bg-emerald-600 py-3 rounded-2xl font-bold transition-all hover:bg-emerald-500 hover:cursor-pointer"
                     >
                       Next
                   </button>
