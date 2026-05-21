@@ -17,7 +17,8 @@ const fakePaySplits = [
   // State variables for the app
   const [pay, setPay] = useState()
   const [categories, setCategories] = useState(['Savings', 'Coffee', 'Gas'])
-  const [date, setDate] = useState('')
+  const [date, setDate] = useState(new Date().toLocaleDateString('en-US', {month: '2-digit', day: '2-digit', year: 'numeric'}))
+  // this will be used to label the pay split with a date. We can default it to today's date, but ideally we would let the user select the date of their payday in the Step 1 of the wizard (will be implemented later)
   const [newPayClicked, setNewPayActivity] = useState(false) // for the SplitButton when we want to initate a new pay split
   const [history, changeHistory] = useState(fakePaySplits) // this is the state for the history container. We will update this when we add a new pay split to the history
   const [wizardStep, changeWizardStep] = useState(0) // this is for the 3-step state wizard in our splitting process. 1 is total pay, 2 is categories, and 3 is the splitting among categories
@@ -53,7 +54,7 @@ const handleNext = () => {
 
         {newPayClicked && (
           <div className="flex justify-center items-center fixed inset-0 z-50 bg-black/60 backdrop-blur-md p-4">
-            <div className="bg-gray-800 border border-emerald-500/30 w-full max-w-lg p-8 rounded-2xl relative">
+            <div className={`bg-gray-800 border border-emerald-500/30 w-full max-w-lg p-8 rounded-2xl relative ${shake ? `animate-shake` : ''}`}>
               
             {/* The back and close buttons */}
               {wizardStep > 1 && (
@@ -71,7 +72,7 @@ const handleNext = () => {
               {/* Step 1: Input the total pay */}
               {wizardStep === 1 && (
                 <div className="text-center">
-                  <h1 className="text-3xl font-bold text-emerald-600 mb-6 underline "> New Pay Split of Date </h1>
+                  <h1 className="text-3xl font-bold text-emerald-600 mb-6 underline "> New Pay Split of {date} </h1>
                   <h2 className="text-2xl font-bold text-emerald-400 mb-4"> How much did you get paid? (after tax and deductions)</h2>
 
                   <div
