@@ -16,13 +16,14 @@ const fakePaySplits = [
 
   // State variables for the app
   const [pay, setPay] = useState()
-  const [categories, setCategories] = useState(['Savings', 'Coffee', 'Gas'])
+  const [categories, setCategories] = useState(['Savings', 'Checkings', 'Entertainment']) // this is the state for the categories that the user will split their pay into. We can default it to some common categories, but ideally we would let the user add and name their own categories in Step 2 of the wizard (will be implemented later)
   const [date, setDate] = useState(new Date().toLocaleDateString('en-US', {month: '2-digit', day: '2-digit', year: 'numeric'}))
   // this will be used to label the pay split with a date. We can default it to today's date, but ideally we would let the user select the date of their payday in the Step 1 of the wizard (will be implemented later)
   const [newPayClicked, setNewPayActivity] = useState(false) // for the SplitButton when we want to initate a new pay split
   const [history, changeHistory] = useState(fakePaySplits) // this is the state for the history container. We will update this when we add a new pay split to the history
   const [wizardStep, changeWizardStep] = useState(0) // this is for the 3-step state wizard in our splitting process. 1 is total pay, 2 is categories, and 3 is the splitting among categories
-  const [shake, setShake] = useState(false) // this is for the shake animation on input field(s) if user tries to proceed without entering valid input)]
+  const [shake, setShake] = useState(false) // this is for the shake animation on input field(s) if user tries to proceed without entering valid input)
+  const [inputError, setInputError] = useState(false) // for invalid input error message
 
 // Regex for pay input field in Step 1; ensures a valid and clean currency input format for the user
 const handlePayChange = (e) => {
@@ -37,15 +38,18 @@ const handleNext = () => {
   if(wizardStep === 1 && (!pay || parseFloat(pay) <= 0)) {
     // if user tries to proceed without entering a valid pay amount, we trigger the shake animation and return early to prevent moving to the next step
     setShake(true)
+    setInputError(true)
   } else {
     changeWizardStep(wizardStep + 1)
+    setInputError(false)
   }
 }
+
 
   return (
     <>
       <MoneyRain />
-      <div className="min-h-scree n bg-gray-900 text-white p-10 font-sans z-10 relative">
+      <div className="min-h-screen bg-gray-900 text-white p-10 z-10 relative">
         <div className="max-w-xl mx-auto bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-700">
           <h1 className="text-3xl font-bold text-emerald-400 mb-6">Weekly Budget Tracker</h1>
 
@@ -76,7 +80,7 @@ const handleNext = () => {
                   <h2 className="text-2xl font-bold text-emerald-400 mb-4"> How much did you get paid? (after tax and deductions)</h2>
 
                   <div
-                    className={`relative mt-4 ${shake ? 'animate-shake' : ''}`}
+                    className={`relative mt-4 ${shake ? 'animate-shake' : ''} `}
                     onAnimationEnd={() => setShake(false)}
                   >
                     <div className="absolute inset-y-0 left-0 pl-3 pb-6 flex items-center pointer-events-none">
@@ -92,7 +96,14 @@ const handleNext = () => {
                       placeholder="0.00"
                       onChange={handlePayChange}
                     />
+
                   </div>
+
+                  {inputError && (
+                    <div className="text-red-500 text-sm px-auto mb-6 mx-auto">
+                      You need to enter a value greater than 0 dollars!
+                    </div>
+                  )}
 
                   <button 
                     onClick={handleNext}
@@ -108,7 +119,20 @@ const handleNext = () => {
               {wizardStep === 2 && (
                 <div className="text-center">
                   <h2 className="text-2xl font-bold text-emerald-400 mb-4"> What categories would you like to split your pay into? Add them below! </h2>
-                    {/* logic will need to be implemented here */}
+                  {/* here, i think im just gonna access the categories state and map over it display the current categories, then have an 'Add New Category' button that adds a new category when clicked */}
+                  <div className="flex flex-col gap-4 mb-6">
+                    {categories.map((category, index) => (
+                      <div key={index + 1} className="flex items-center gap-4 justify-left bg-emerald-500 max-w-3xl
+                      px-4 py-3 rounded-lg mb-1 border border-gray-600">
+                        {`Category ${index + 1}: ${category}`}
+                      </div>
+                    ))}
+
+                    <div className=" border-2 border-dashed border-emerald-500 py-2 px-4 rounded-lg hover:bg-emerald-500 cursor-pointer">
+                      Add New Category
+                    </div>
+
+                  </div>
                   <button
                     onClick={()=> changeWizardStep(3)}
                     className="w-full bg-emerald-600 py-3 rounded-2x font-bold mt-4"
