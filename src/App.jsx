@@ -1,29 +1,43 @@
-import { useState } from 'react'
 import './App.css'
+
+// Component imports
+import { useState } from 'react'
 import { PaySplitHistoryBox } from './PaySplitHistoryBox.jsx';
 import MoneyRain from './MoneyRain.jsx'
 import SplitButton from './NewSplitButton.jsx'
-import { MoveLeft } from 'lucide-react';
+
+// SVG/icon imports
+import { MoveLeft } from 'lucide-react'
+import { Pencil } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
 
 export default function App() {
 
-const fakePaySplits = [ 
+const paySplits = [ 
   {id: 1, Date: '(02/06/2026)', pay: 660.36},
   {id: 2, Date: '(02/13/2026)', pay: 734.92},
   {id: 3, Date: '(02/20/2026)', pay: 553.18}
 ] // these are to display within the history cotainer below. REMINDER: JS DOES MONTHS 0 TO 11
 
 
-  // State variables for the app
+/********************* STATE VARIABLES FOR THE APP *********************/
   const [pay, setPay] = useState()
-  const [categories, setCategories] = useState(['Savings', 'Checkings', 'Entertainment']) // this is the state for the categories that the user will split their pay into. We can default it to some common categories, but ideally we would let the user add and name their own categories in Step 2 of the wizard (will be implemented later)
+  const [categories, setCategories] = useState(
+    [ {id: crypto.randomUUID(), name: 'Savings'},
+    {id: crypto.randomUUID(), name: 'Checkings'},
+    {id: crypto.randomUUID(), name: 'Entertainment'} ]
+  ) // this is the state for the categories that the user will split their pay into. We can default it to some common categories, but ideally we would let the user add and name their own categories in Step 2 of the wizard (will be implemented later)
+
   const [date, setDate] = useState(new Date().toLocaleDateString('en-US', {month: '2-digit', day: '2-digit', year: 'numeric'}))
   // this will be used to label the pay split with a date. We can default it to today's date, but ideally we would let the user select the date of their payday in the Step 1 of the wizard (will be implemented later)
   const [newPayClicked, setNewPayActivity] = useState(false) // for the SplitButton when we want to initate a new pay split
-  const [history, changeHistory] = useState(fakePaySplits) // this is the state for the history container. We will update this when we add a new pay split to the history
+  const [history, changeHistory] = useState(paySplits) // this is the state for the history container. We will update this when we add a new pay split to the history
   const [wizardStep, changeWizardStep] = useState(0) // this is for the 3-step state wizard in our splitting process. 1 is total pay, 2 is categories, and 3 is the splitting among categories
   const [shake, setShake] = useState(false) // this is for the shake animation on input field(s) if user tries to proceed without entering valid input)
   const [inputError, setInputError] = useState(false) // for invalid input error message
+
+
+/********************* FUNCTIONS FOR THE APP *********************/
 
 // Regex for pay input field in Step 1; ensures a valid and clean currency input format for the user
 const handlePayChange = (e) => {
@@ -45,6 +59,10 @@ const handleNext = () => {
   }
 }
 
+const deleteCategory = (id) => {
+  // this will be a function to delete a category from the categories state, using the corresponding UUID generated for them}
+  setCategories(categories.filter(category => category.id !== id))
+}
 
   return (
     <>
@@ -114,6 +132,11 @@ const handleNext = () => {
                 </div>     
               )}
 
+
+
+
+
+
               {/* Step 2: Adding the categories */}
               {/* i want to finish this step before moving on to the next one, so I can have the categories state ready to be passed into the pie chart component in Step 3 */}
               {wizardStep === 2 && (
@@ -122,13 +145,22 @@ const handleNext = () => {
                   {/* here, i think im just gonna access the categories state and map over it display the current categories, then have an 'Add New Category' button that adds a new category when clicked */}
                   <div className="flex flex-col gap-4 mb-6">
                     {categories.map((category, index) => (
-                      <div key={index + 1} className="flex items-center gap-4 justify-left bg-emerald-500 max-w-3xl
+                      <div key={categories.id} className="flex items-center justify-between bg-emerald-500 max-w-3xl
                       px-4 py-3 rounded-lg mb-1 border border-gray-600">
-                        {`Category ${index + 1}: ${category}`}
+                        <div>
+                          {`Category ${index+1}: ${category.name}`}
+                        </div>
+                        <div className="flex gap-2">
+                          <Pencil className="text-white hover:text-black transition-all ease-in-out transition-400 cursor-pointer"/> 
+                          <Trash2 className="text-white hover:text-red-500 transition-all ease-in-out transition-400 cursor-pointer"
+                            onClick={() => deleteCategory(category.id)}
+                          />
+                        </div>
                       </div>
-                    ))}
+                      ))
+                    }
 
-                    <div className=" border-2 border-dashed border-emerald-500 py-2 px-4 rounded-lg hover:bg-emerald-500 cursor-pointer">
+                    <div className="border-2 border-dashed border-emerald-500 py-2 px-4 rounded-lg hover:bg-emerald-500 cursor-pointer">
                       Add New Category
                     </div>
 
@@ -141,6 +173,12 @@ const handleNext = () => {
                   </button>
                 </div>
               )}
+
+
+
+
+
+
 
               {wizardStep === 3 && (
                 <div className="text-center">
