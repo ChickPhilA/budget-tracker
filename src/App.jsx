@@ -22,6 +22,9 @@ const paySplits = [
 
 /********************* STATE VARIABLES FOR THE APP *********************/
   const [pay, setPay] = useState()
+  const [categoryInput, setCategoryInput] = useState('')
+  const [history, changeHistory] = useState(paySplits) // this is the state for the history container. We will update this when we add a new pay split to the history
+  const [wizardStep, changeWizardStep] = useState(0) // this is for the 3-step state wizard in our splitting process. 1 is total pay, 2 is categories, and 3 is the splitting among categories
   const [categories, setCategories] = useState(
     [ {id: crypto.randomUUID(), name: 'Savings'},
     {id: crypto.randomUUID(), name: 'Checkings'},
@@ -30,12 +33,12 @@ const paySplits = [
 
   const [date, setDate] = useState(new Date().toLocaleDateString('en-US', {month: '2-digit', day: '2-digit', year: 'numeric'}))
   // this will be used to label the pay split with a date. We can default it to today's date, but ideally we would let the user select the date of their payday in the Step 1 of the wizard (will be implemented later)
+
+  // conditional states
   const [newPayClicked, setNewPayActivity] = useState(false) // for the SplitButton when we want to initate a new pay split
-  const [history, changeHistory] = useState(paySplits) // this is the state for the history container. We will update this when we add a new pay split to the history
-  const [wizardStep, changeWizardStep] = useState(0) // this is for the 3-step state wizard in our splitting process. 1 is total pay, 2 is categories, and 3 is the splitting among categories
   const [shake, setShake] = useState(false) // this is for the shake animation on input field(s) if user tries to proceed without entering valid input)
   const [inputError, setInputError] = useState(false) // for invalid input error message
-
+  const [addCategoryWindow, setCategoryWindowState] = useState(false) // this is the dstate variable to track if the "add new category" window is showing or not
 
 /********************* FUNCTIONS FOR THE APP *********************/
 
@@ -48,20 +51,38 @@ const handlePayChange = (e) => {
   }
 }
 
-const handleNext = () => {
-  if(wizardStep === 1 && (!pay || parseFloat(pay) <= 0)) {
-    // if user tries to proceed without entering a valid pay amount, we trigger the shake animation and return early to prevent moving to the next step
-    setShake(true)
-    setInputError(true)
-  } else {
-    changeWizardStep(wizardStep + 1)
-    setInputError(false)
-  }
+const addCategory = (categoryName) => {
+  const newCategory = { id: crypto.randomUUID(), name: categoryName}
+  setCategories([...categories, newCategory])
 }
 
 const deleteCategory = (id) => {
   // this will be a function to delete a category from the categories state, using the corresponding UUID generated for them}
   setCategories(categories.filter(category => category.id !== id))
+}
+
+const handleNext = () => {
+  if(wizardStep === 1 && (!pay || parseFloat(pay) <= 0)) {
+    // if user tries to proceed without entering a valid pay amount, we trigger the shake animation and return early to prevent moving to the next step
+    setShake(true)
+    setInputError(true)
+  }
+
+  else if(wizardStep === 2) {
+    if(categoryInput.trim() === '') {
+      setShake(true)
+      setInputError(true)
+      return
+    }
+    addCategory(categoryInput.trim())
+    setCategoryInput('')
+    setInputError(false)
+    setCategoryWindowState(false)
+  }
+  else {
+    setInputError(false) // reset input error state on successful validation
+    changeWizardStep(wizardStep + 1) // move to the next step in the wizard if validation passes
+  }
 }
 
   return (
@@ -138,14 +159,12 @@ const deleteCategory = (id) => {
 
 
               {/* Step 2: Adding the categories */}
-              {/* i want to finish this step before moving on to the next one, so I can have the categories state ready to be passed into the pie chart component in Step 3 */}
               {wizardStep === 2 && (
                 <div className="text-center">
                   <h2 className="text-2xl font-bold text-emerald-400 mb-4"> What categories would you like to split your pay into? Add them below! </h2>
-                  {/* here, i think im just gonna access the categories state and map over it display the current categories, then have an 'Add New Category' button that adds a new category when clicked */}
                   <div className="flex flex-col gap-4 mb-6">
                     {categories.map((category, index) => (
-                      <div key={categories.id} className="flex items-center justify-between bg-emerald-500 max-w-3xl
+                      <div key={category.id} className="flex items-center justify-between bg-emerald-500 max-w-3xl
                       px-4 py-3 rounded-lg mb-1 border border-gray-600">
                         <div>
                           {`Category ${index+1}: ${category.name}`}
@@ -160,19 +179,67 @@ const deleteCategory = (id) => {
                       ))
                     }
 
-                    <div className="border-2 border-dashed border-emerald-500 py-2 px-4 rounded-lg hover:bg-emerald-500 cursor-pointer">
+                    <div className="border-2 border-dashed border-emerald-500 py-2 px-4 rounded-lg transition-all ease-in-out transition-400
+                    hover:bg-emerald-500 active:translate-y-1 active:translate-z-1 cursor-pointer"
+                     onClick={() => setCategoryWindowState(true)}
+                    >
                       Add New Category
                     </div>
 
                   </div>
                   <button
                     onClick={()=> changeWizardStep(3)}
-                    className="w-full bg-emerald-600 py-3 rounded-2x font-bold mt-4"
+                    className="w-full bg-emerald-600 py-3 rounded-2xl font-bold mt-4"
                   >
                     Next
                   </button>
                 </div>
               )}
+
+              {wizardStep === 2 && addCategoryWindow && (
+                <div className="absolute inset-0 border border-gray-600 rounded-xl bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+                  <div className="bg-gray-800 p-6 border rounded-lg w-full max-w-md">
+                    <MoveLeft onClick = {() => {
+                      setCategoryWindowState(false);
+                      setInputError(false);
+                      setCategoryInput('');
+                    }}
+                      className="absolute text-gray-400 hover:text-emerald-500 hover:cursor-pointer hover:transition-colors">
+                    </MoveLeft>
+                
+                    <div
+                      className={`relative mt-4 ${shake ? 'animate-shake' : ''} `}
+                      onAnimationEnd={() => setShake(false)}
+                    >
+
+                      <h3 className="text-xl font-bold mb-4 text-emerald-400"> Add a New Category </h3>
+                      <input
+                        type="text"
+                        inputMode="text"
+                        value={categoryInput}
+                        onChange={(e) => setCategoryInput(e.target.value)}
+                        className={`bg-gray-700 border-b-2 ${inputError ? 'border-red-500' : 'border-emerald-500'} text-white text-lg w-full outline-none p-2`}
+                        placeholder="Category Name"
+                      />
+
+                        {inputError && (
+                          <div className="text-red-500 text-sm px-auto my-3 mx-auto">
+                            A category name cannot be named empty! Please enter a valid category name before proceeding.
+                          </div>
+                        )}
+
+                      <button
+                      onClick={handleNext}
+                      className="w-full bg-emerald-600 py-3 rounded-2xl font-bold mt-4 active:translate-y-1 active:translate-z-1 transition-all hover:bg-emerald-500 hover:cursor-pointer">
+                        Add Category
+                      </button>
+                    </div>
+
+                  </div>
+                </div>
+              )
+                
+              }
 
 
 
