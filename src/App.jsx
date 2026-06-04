@@ -31,6 +31,9 @@ const paySplits = [
     {id: crypto.randomUUID(), name: 'Entertainment'} ]
   ) // this is the state for the categories that the user will split their pay into. We can default it to some common categories, but ideally we would let the user add and name their own categories in Step 2 of the wizard (will be implemented later)
 
+  const [editingCategoryID, setEditingCategoryID] = useState(null) // this will be used to track the ID of which category the user is currently editing
+  const [categoryEditName, setCategoryEditName] = useState('') // this will be used to hold the temporary edited name of a category while the user is editing it
+
   const [date, setDate] = useState(new Date().toLocaleDateString('en-US', {month: '2-digit', day: '2-digit', year: 'numeric'}))
   // this will be used to label the pay split with a date. We can default it to today's date, but ideally we would let the user select the date of their payday in the Step 1 of the wizard (will be implemented later)
 
@@ -38,7 +41,7 @@ const paySplits = [
   const [newPayClicked, setNewPayActivity] = useState(false) // for the SplitButton when we want to initate a new pay split
   const [shake, setShake] = useState(false) // this is for the shake animation on input field(s) if user tries to proceed without entering valid input)
   const [inputError, setInputError] = useState(false) // for invalid input error message
-  const [addCategoryWindow, setCategoryWindowState] = useState(false) // this is the dstate variable to track if the "add new category" window is showing or not
+  const [addCategoryWindow, setCategoryWindowState] = useState(false) // this is for the conditional rendering of the add category input field in Step 2 of the wizard
 
 /********************* FUNCTIONS FOR THE APP *********************/
 
@@ -59,6 +62,12 @@ const addCategory = (categoryName) => {
 const deleteCategory = (id) => {
   // this will be a function to delete a category from the categories state, using the corresponding UUID generated for them}
   setCategories(categories.filter(category => category.id !== id))
+}
+
+const editCategory = (id) => {
+  setEditingCategoryID(id)
+  const categoryToEdit = categories.find(category => category.id === id)
+  setCategoryEditName(categoryToEdit.name)
 }
 
 const handleNext = () => {
@@ -166,16 +175,34 @@ const handleNext = () => {
                     {categories.map((category, index) => (
                       <div key={category.id} className="flex items-center justify-between bg-emerald-500 max-w-3xl
                       px-4 py-3 rounded-lg mb-1 border border-gray-600">
+                        {  
+                        category.id === editingCategoryID ? (
+                          <div>
+                            <input
+                              type="text"
+                              value={categoryEditName}
+                              onChange={(e) => setCategoryEditName(e.target.value)}
+
+                              className="bg-gray-700 text-white placeholder:text-gray-500 border-b-2 border-emerald-500 focus:outline-none"
+                              placeholder="Enter category name"
+                            />
+                          </div>
+                        ) : (
                         <div>
-                          {`Category ${index+1}: ${category.name}`}
+                          <div>
+                            {`Category ${index+1}: ${category.name}`}
+                          </div>
+                          <div className="flex gap-2">
+                            <Pencil className="text-white hover:text-black transition-all ease-in-out transition-400 cursor-pointer active:scale-95"
+                              onClick={() => editCategory(category.id)}
+                            /> 
+                            <Trash2 className="text-white hover:text-red-500 transition-all ease-in-out transition-400 cursor-pointer active:scale-95"
+                              onClick={() => deleteCategory(category.id)}
+                            />
+                          </div>
                         </div>
-                        <div className="flex gap-2">
-                          <Pencil className="text-white hover:text-black transition-all ease-in-out transition-400 cursor-pointer"/> 
-                          <Trash2 className="text-white hover:text-red-500 transition-all ease-in-out transition-400 cursor-pointer"
-                            onClick={() => deleteCategory(category.id)}
-                          />
-                        </div>
-                      </div>
+                        )}
+                      </div> 
                       ))
                     }
 
