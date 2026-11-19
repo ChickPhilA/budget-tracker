@@ -1,30 +1,52 @@
 # Paycheck Allocation Tool
 
-## The Issue
+A React web app that helps variable-income workers (part-time, hourly, tipped) decide where each paycheck goes the moment it lands.
 
-Many workers have a fixed '9-to-5' salary, while others, who work part-time jobs and other dynamic sources of income, have variable income partioning salaries: salaries that always vary based on hours and tips within a time-period payroll basis.
+**Status: work in progress.** The first two steps of the pay-split wizard work; the final allocation step is not built yet. See [What's built](#whats-built) and [Roadmap](#roadmap).
 
-Some of these workers pick up extra hours that can further help them pay rent or save more towards that graphics card they'd want to buy. In contrat, those with hour cuts are under a tight belt, having to carefully allocate how much will their next paycheck go towards their savings and necessities. When your paycheck fluctuates based on hours and tips, budgeting isn't a "set-and-forget" task; it's a high-stakes allocation problem. A single hour cut can turn a "want" into a "necessity" trade-off.
+## The Problem
 
-As a variable-income partitioned barista who also struggles with the mental weight of financing, this tool was created to solve the cognitive load of paycheck-to-paycheck partioning, allowing workers to financially allocate and stragetize, the moment their paycheck hits their wallet.
+Many workers have a fixed 9-to-5 salary. Others earn income that changes every pay period with hours and tips. When your paycheck fluctuates, budgeting isn't "set and forget": one hour cut can turn a "want" into a "necessity" trade-off.
 
-## Asset Credits
+I'm a variable-income barista myself, and I built this to reduce the mental load of splitting each paycheck between savings and necessities.
 
-Credit to FlorinPop17 on Codepen for his money falling animation, which is used on the background of my web app. Check it out here: https://codepen.io/FlorinPop17/pen/OGaMLb
+## What's built
 
-# React + Vite
+- **Step 1 – Enter your pay:** a currency input that only accepts valid amounts (digits, up to 2 decimal places) and shows an error plus a shake animation if you try to continue with an empty or zero value.
+- **Step 2 – Choose categories:** add and delete spending categories (defaults: Savings, Checkings, Entertainment). Each category gets a UUID so add/delete stays reliable even with duplicate or renamed names. Empty names are rejected.
+- **Pay split history:** a list of previous paydays (currently sample data) with a delete control.
+- Dark UI built with Tailwind CSS and a falling-money background animation.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Roadmap
 
-Currently, two official plugins are available:
+- [ ] Step 3: allocate the paycheck across categories by percentage, with a pie chart of the split
+- [ ] Finish category renaming (the edit field is wired up; saving the new name is not)
+- [ ] Save splits to the history list and persist them (localStorage first)
+- [ ] Let the user pick the payday date
+- [ ] AI-generated spending insights using the Claude API
+- [ ] Deploy to Vercel
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech stack
 
-## React Compiler
+React 19, Vite, Tailwind CSS 4, lucide-react, uuid
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Run it locally
 
-## Expanding the ESLint configuration
+Requires Node.js 18+.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+git clone https://github.com/ChickPhilA/budget-tracker.git
+cd budget-tracker
+npm install
+npm run dev
+```
+
+Then open the local URL Vite prints (usually http://localhost:5173).
+
+## How I built it
+
+I'm building this to deepen my React fundamentals: state with `useState`, controlled inputs, conditional rendering for the multi-step wizard, and component composition. I use AI tools (Claude) as a learning aid for hints and code review, and I write and understand the code myself.
+
+## Asset credits
+
+Money-falling background animation by FlorinPop17 on CodePen: https://codepen.io/FlorinPop17/pen/OGaMLb****
